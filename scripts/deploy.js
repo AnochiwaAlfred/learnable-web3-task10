@@ -14,24 +14,24 @@ const main = async () => {
         console.log("Contract deployed to:", feedbackContract.target);
 
 
-        // fbCount = await feedbackContract.getFeedbackCount();
-        // console.log(fbCount);
+        fbCount = await feedbackContract.getFeedbackCount();
+        console.log(fbCount);
 
-        // await feedbackContract.giveFeedback("New Feedback");
-        // fbCount = await feedbackContract.getFeedbackCount();
-        // console.log(fbCount);
-        // newFB = await feedbackContract.getFeedback(0)
-        // console.log(newFB);
-        // fbs = await feedbackContract.getFeedbacks()
-        // console.log(fbs);
+        await feedbackContract.giveFeedback("New Feedback");
+        fbCount = await feedbackContract.getFeedbackCount();
+        console.log(fbCount);
+        newFB = await feedbackContract.getFeedback(0)
+        console.log(newFB);
+        fbs = await feedbackContract.getFeedbacks()
+        console.log(fbs);
 
-        // await feedbackContract.giveFeedback("Second Feedback");
-        // fbCount = await feedbackContract.getFeedbackCount();
-        // console.log(fbCount);
-        // newFB = await feedbackContract.getFeedback(0)
-        // console.log(newFB);
-        // fbs = await feedbackContract.getFeedbacks()
-        // console.log(fbs);
+        await feedbackContract.giveFeedback("Second Feedback");
+        fbCount = await feedbackContract.getFeedbackCount();
+        console.log(fbCount);
+        newFB = await feedbackContract.getFeedback(0)
+        console.log(newFB);
+        fbs = await feedbackContract.getFeedbacks()
+        console.log(fbs);
 
 
         const { artifacts } = require("hardhat");
