@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback DApp</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Feedback DApp</h1>
+    <div id="feedbackContainer"></div>
+    <hr>
+    <h2>Give Feedback</h2>
+    <textarea id="feedbackText" rows="4" cols="50"></textarea><br>
+    <button onclick="sendFeedback()">Submit</button>
+
+    <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js" crossorigin="anonymous"></script>
+
+
+    <script>
+        const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545"); // Replace with your Ethereum node URL
+        const contractAddress = "0x64cfa107995306e083FdBB951F3D55bEfA64cc1a"; // Replace with your contract address
+        const contractABI = [
+        { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
+        {
+          anonymous: false,
+          inputs: [ [Object], [Object] ],
+          name: 'FeedbackReceived',
+          type: 'event'
+        },
+        {
+          inputs: [ [Object] ],
+          name: 'feedbacks',
+          outputs: [ [Object], [Object] ],
+          stateMutability: 'view',
+          type: 'function'
+        },
+        {
+          inputs: [ [Object] ],
+          name: 'getFeedback',
+          outputs: [ [Object], [Object] ],
+          stateMutability: 'view',
+          type: 'function'
+        },
+        {
+          inputs: [],
+          name: 'getFeedbackCount',
+          outputs: [ [Object] ],
+          stateMutability: 'view',
+          type: 'function'
+        },
+        {
+          inputs: [],
+          name: 'getFeedbacks',
+          outputs: [ [Object], [Object] ],
+          stateMutability: 'view',
+          type: 'function'
+        },
+        {
+          inputs: [ [Object] ],
+          name: 'giveFeedback',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function'
+        }
+      ];
+        const contract = new ethers.Contract(contractAddress, contractABI, provider);
+        const signer = provider.getSigner();
+
+        const sendFeedback = async () => {
+            const feedbackText = document.getElementById('feedbackText').value;
+            
+            try {
+                const tx = await contract.connect(signer).giveFeedback(feedbackText);
+                await tx.wait();
+                alert('Feedback sent successfully!');
+                // Refresh feedback list
+                getFeedbacks();
+            } catch (error) {
+                console.error("Error sending feedback:", error);
+            }
+        };
+
+        const getFeedbacks = async () => {
+            try {
+                const feedbackContainer = document.getElementById('feedbackContainer');
+                feedbackContainer.innerHTML = '';
+                const fbCount = await contract.getFeedbackCount();
+                for (let i = 0; i < fbCount; i++) {
+                    const [sender, message] = await contract.getFeedback(i);
+                    const feedbackDiv = document.createElement('div');
+                    feedbackDiv.innerHTML = `<b>From:</b> ${sender}<br><b>Message:</b> ${message}<br><br>`;
+                    feedbackContainer.appendChild(feedbackDiv);
+                }
+            } catch (error) {
+                console.error("Error getting feedbacks:", error);
+            }
+        };
+
+        // Call getFeedbacks() when the page loads
+        window.onload = function() {
+            getFeedbacks();
+        };
+    </script>
+</body>
+</html>
